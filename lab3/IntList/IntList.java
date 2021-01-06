@@ -48,6 +48,8 @@ public class IntList {
             A = new IntList(B.first, A);
             B = B.rest;
         }
+       return A;
+   }
 
     /**
      * Returns a list equal to L with all elements squared. Destructive.
