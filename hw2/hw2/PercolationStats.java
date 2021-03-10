@@ -4,7 +4,7 @@ import edu.princeton.cs.introcs.StdRandom;
 import edu.princeton.cs.introcs.StdStats;
 
 public class PercolationStats {
-    int[] numArr;
+    double[] numArr;
     double mean;
     double stddev;
     double confidenceLow;
@@ -21,7 +21,7 @@ public class PercolationStats {
         }
 
         // Array of the number of each percolation
-        numArr = new int[T];
+        numArr = new double[T];
 
         for (int i = 0; i < T; i++) {
             Percolation percoSim = pf.make(N);
@@ -30,7 +30,7 @@ public class PercolationStats {
                 int col = StdRandom.uniform(0, N);
                 percoSim.open(row, col);
             }
-            numArr[i] = percoSim.numberOfOpenSites();
+            numArr[i] = (double) percoSim.numberOfOpenSites() / (N * N);
         }
         mean = mean();
         stddev = stddev();
@@ -59,7 +59,7 @@ public class PercolationStats {
     }
 
     public static void main (String[] args) {
-        PercolationStats x = new PercolationStats(800, 30, new PercolationFactory());
+        PercolationStats x = new PercolationStats(100, 30, new PercolationFactory());
         System.out.println(x.mean());
     }
 }
