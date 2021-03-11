@@ -74,7 +74,7 @@ public class Percolation {
         if (row > n || col > n) {
             throw new IndexOutOfBoundsException("Out of index.");
         }
-        return percoUF.connected(xyTo1D(row, col), n * n);
+        return isOpen(row, col) && percoUF.connected(xyTo1D(row, col), n * n);
     }
 
     // change the xy correspond to 1D number
