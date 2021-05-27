@@ -177,7 +177,23 @@ public class Board implements WorldState {
     /*Returns true if this board's tile values are the same
               position as y's*/
     public boolean equals(Object y) {
-        return hamming() == 0;
+        if (this == y) {
+            return true;
+        }
+        if (y.getClass() != this.getClass()) {
+            return false;
+        }
+        Board boardY = (Board) y;
+        if (boardY.size() != size) {
+            return false;
+        }
+        int[] boardY1D = boardY.boardCur;
+        for (int i = 0; i < size * size; i++) {
+            if (boardY1D[i] != boardCur[i]) {
+                return false;
+            }
+        }
+        return true;
     }
 
 
