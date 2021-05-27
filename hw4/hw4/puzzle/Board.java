@@ -128,6 +128,9 @@ public class Board implements WorldState {
     public int hamming() {
         int error = 0;
         for (int i = 0; i < size * size; i++) {
+            if (boardGoal[i] == 0) {
+                continue;
+            }
             if (boardCur[i] != boardGoal[i]) {
                 error++;
             }
