@@ -1,10 +1,17 @@
 package hw4.puzzle;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+
+//import hw4.puzzle.Board;
+
 
 public class TestBoard {
+
     @Test
     public void verifyImmutability() {
+
         int r = 2;
         int c = 2;
         int[][] x = new int[r][c];
@@ -23,5 +30,7 @@ public class TestBoard {
 
         x[1][1] = 1000;
         assertEquals("Your Board class is mutable and you should be making a copy of the values in the passed tiles array. Please see the FAQ!", 3, b.tileAt(1, 1));
+
     }
-} 
+
+}
