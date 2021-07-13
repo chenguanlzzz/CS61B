@@ -27,10 +27,10 @@ public class Percolation {
         percoUF = new WeightedQuickUnionUF(N * N + 2);
         int top = N * N;
         //int bot = N * N + 1;
-        for (int i = 0; i < N; i++) {
-            percoUF.union(i, top);
-            //percoUF.union(top - 1 - i, bot);
-        }
+        //for (int i = 0; i < N; i++) {
+        //  percoUF.union(i, top);
+        //percoUF.union(top - 1 - i, bot);
+        //}
     }
 
     // open the site (row, col) if it is not open already
@@ -53,11 +53,14 @@ public class Percolation {
         if (col > 0 && isOpen(row, col - 1)) {
             percoUF.union(xyTo1D(row, col), xyTo1D(row, col - 1));
         }
-        if (col < n - 1 && isOpen(row , col + 1)) {
+        if (col < n - 1 && isOpen(row, col + 1)) {
             percoUF.union(xyTo1D(row, col), xyTo1D(row, col + 1));
         }
-        if (row == n - 1 && isFull(row, col)) {
+        if (row == n - 1 && !percolates()) {
             percoUF.union(n * n + 1, xyTo1D(row, col));
+        }
+        if (row == 0) {
+            percoUF.union(n * n, xyTo1D(row, col));
         }
     }
 
@@ -74,11 +77,13 @@ public class Percolation {
         if (row > n || col > n) {
             throw new IndexOutOfBoundsException("Out of index.");
         }
-        return isOpen(row, col) && percoUF.connected(xyTo1D(row, col), n * n);
+        return isOpen(row, col) && percoUF.connected(xyTo1D(row, col), n * n)
+                && percoUF.connected(xyTo1D(row, col), n * n + 1);
+
     }
 
     // change the xy correspond to 1D number
-    private int xyTo1D (int x, int y) {
+    private int xyTo1D(int x, int y) {
         return x * n + y;
     }
 
@@ -95,7 +100,7 @@ public class Percolation {
     // use for unit testing (not required)
     public static void main(String[] args) {
         Percolation x = new Percolation(3);
-        x.open(0,0);
+        x.open(0, 0);
         //System.out.println(x.isOpen(0, 0));
         //System.out.println(x.isFull(0, 0));
         //System.out.println(x.isFull(1, 0));
@@ -106,9 +111,9 @@ public class Percolation {
 
         x.open(2, 0);
         System.out.println(x.percolates());
-        x.open(2,0);
-        x.open(2,2);
-        System.out.println(x.isFull(2,2));
+        x.open(2, 0);
+        x.open(2, 2);
+        System.out.println(x.isFull(2, 2));
         System.out.println(x.numberOfOpenSites());
 
     }
