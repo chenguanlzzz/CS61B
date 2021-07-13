@@ -2,11 +2,15 @@ package hw2;
 
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class Percolation {
     boolean[][] percoMatrix;
     int n;
     WeightedQuickUnionUF percoUF;
     int openSize;
+    Set<Integer> openTop, openBot;
 
     // create N-by-N grid, with all sites initially blocked
     public Percolation(int N) {
@@ -25,12 +29,14 @@ public class Percolation {
 
         // the second to last is the secret node for top, last node is secret node for bottom;
         percoUF = new WeightedQuickUnionUF(N * N + 2);
-        int top = N * N;
+        //int top = N * N;
         //int bot = N * N + 1;
         //for (int i = 0; i < N; i++) {
         //  percoUF.union(i, top);
         //percoUF.union(top - 1 - i, bot);
         //}
+        openTop = new HashSet<>();
+        openBot = new HashSet<>();
     }
 
     // open the site (row, col) if it is not open already
@@ -43,24 +49,63 @@ public class Percolation {
         }
         percoMatrix[row][col] = true;
         openSize += 1;
+        int cur = xyTo1D(row, col);
         // Check the surrounding is fall or not, if it is, make this element fall
         if (row > 0 && isOpen(row - 1, col)) {
-            percoUF.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            percoUF.union(cur, xyTo1D(row - 1, col));
         }
         if (row < n - 1 && isOpen(row + 1, col)) {
-            percoUF.union(xyTo1D(row, col), xyTo1D(row + 1, col));
+            percoUF.union(cur, xyTo1D(row + 1, col));
         }
         if (col > 0 && isOpen(row, col - 1)) {
-            percoUF.union(xyTo1D(row, col), xyTo1D(row, col - 1));
+            percoUF.union(cur, xyTo1D(row, col - 1));
         }
         if (col < n - 1 && isOpen(row, col + 1)) {
-            percoUF.union(xyTo1D(row, col), xyTo1D(row, col + 1));
+            percoUF.union(cur, xyTo1D(row, col + 1));
         }
-        if (row == n - 1 && !percolates()) {
-            percoUF.union(n * n + 1, xyTo1D(row, col));
+        if (row == n - 1) {
+            if (!percolates()) {
+                percoUF.union(n * n + 1, cur);
+            } else {
+                if (percoUF.connected(cur, n * n)) {
+                    percoUF.union(n * n + 1, cur);
+                } else {
+                    boolean notPer = true;
+                    for (int top : openTop) {
+                        if (percoUF.connected(cur, top)) {
+                            percoUF.union(n * n + 1, cur);
+                            openTop.remove(top);
+                            notPer = false;
+                            break;
+                        }
+                    }
+                    if (notPer) {
+                        openBot.add(cur);
+                    }
+                }
+            }
         }
         if (row == 0) {
-            percoUF.union(n * n, xyTo1D(row, col));
+            if (!percolates()) {
+                percoUF.union(n * n, cur);
+            } else {
+                if (percoUF.connected(cur, n * n + 1)) {
+                    percoUF.union(n * n, cur);
+                } else {
+                    boolean notPer = true;
+                    for (int bot : openBot) {
+                        if (percoUF.connected(cur, bot)) {
+                            percoUF.union(n * n + 1, cur);
+                            openBot.remove(bot);
+                            notPer = false;
+                            break;
+                        }
+                    }
+                    if (notPer) {
+                        openTop.add(cur);
+                    }
+                }
+            }
         }
     }
 
