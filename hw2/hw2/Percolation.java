@@ -57,8 +57,12 @@ public class Percolation {
         if (col < n - 1 && isOpen(row, col + 1)) {
             percoUF.union(cur, xyTo1D(row, col + 1));
         }
-        if (row == n - 1 && isFull(row, col)) {
-            percoUF.union(n * n + 1, cur);
+        if (row == n - 1) {
+            if (isFull(row, col)) {
+                percoUF.union(n * n + 1, cur);
+            } else if (!percolates()) {
+                percoUF.union(n * n + 1, cur);
+            }
         }
         if (row == 0) {
             percoUF.union(n * n, cur);
